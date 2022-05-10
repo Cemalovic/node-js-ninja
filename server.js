@@ -1,5 +1,7 @@
 const http = require('http')
 const fs = require('fs')
+// lodash - donja crta
+const _ = require('lodash')
 
 // kreiranje servera
 // req/request je ono sto je user poslao/trazio npr url, get/post metoda itd.
@@ -7,7 +9,19 @@ const fs = require('fs')
 const server = http.createServer((req, res) => {
   // console.log('request made')
   // console.log(req)
-  console.log(req.url, req.method)
+  // console.log(req.url, req.method)
+
+  // lodash random number (od 0 do 20)
+  const num = _.random(0, 20)
+  console.log(num)
+
+  // lodash - okini funkciju samo jednom
+  const greet = _.once(() => {
+    console.log('hello')
+  })
+
+  greet()
+  greet()
 
   // set header content type
   // res.setHeader('Content-Type', 'text/plain')

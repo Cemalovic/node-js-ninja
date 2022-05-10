@@ -2,7 +2,7 @@
   "name": "js-ninja",
   "version": "1.0.0",
   "description": "",
-  "main": "files.js",
+  "main": "server.js",
   "directories": {
     "doc": "docs"
   },
@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/Cemalovic/node-js-ninja/issues"
   },
-  "homepage": "https://github.com/Cemalovic/node-js-ninja#readme"
+  "homepage": "https://github.com/Cemalovic/node-js-ninja#readme",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
 }
