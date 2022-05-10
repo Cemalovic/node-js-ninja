@@ -16,5 +16,5 @@ const writeStream = fs.createWriteStream('./docs/blog4.txt')
 //   writeStream.write(chunk)
 // })
 
-// piping - radi isto sto i ovo iznad (sa '.on' listener-om), samo bez 'NEW CHUNK'
+// piping - radi isto sto i ovo iznad (sa '.on' listener-om, bez 'NEW CHUNK')
 readStream.pipe(writeStream)
