@@ -1,28 +1,63 @@
 const express = require('express')
+const morgan = require('morgan')
+const mongoose = require('mongoose')
+const Blog = require('./models/blog')
 
 // express app
 const app = express()
+
+// mongoDB connect
+const dbURI =
+  'mongodb+srv://sexykoder:test1982@nodetutorial.p0kgv.mongodb.net/node-tutorial?retryWrites=true&w=majority'
+mongoose
+  .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then((result) => app.listen(3000))
+  .catch((err) => console.log(err))
 
 // register view engine (with 'ejs')
 app.set('view engine', 'ejs')
 
 // listening for requests
-app.listen(3000)
+// app.listen(3000)
 
-app.use((req, res, next) => {
-  console.log('new request has made:')
-  console.log('host: ', req.hostname)
-  console.log('path: ', req.path)
-  console.log('method: ', req.method)
-  next()
+// middleware & static files (css, images, ..)
+app.use(express.static('public'))
+
+// logs 'method' and 'port'/'path'
+app.use(morgan('dev'))
+
+// mongoose and mong sandbox routes
+app.get('/add-blog', (req, res) => {
+  const blog = new Blog({
+    title: 'new blog',
+    snippet: 'about my new blog',
+    body: 'more about my new blog'
+  })
+
+  blog
+    .save()
+    .then((result) => {
+      res.send(result)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 })
+
+// app.use((req, res, next) => {
+//   console.log('new request has made:')
+//   console.log('host: ', req.hostname)
+//   console.log('path: ', req.path)
+//   console.log('method: ', req.method)
+//   next()
+// })
 
 // next() ce raditi samo ukoliko middleware nije poslao 'response'
 // ovde ce okinuti i prikazati console.log()
-app.use((req, res, next) => {
-  console.log('in the next middleware')
-  next()
-})
+// app.use((req, res, next) => {
+//   console.log('in the next middleware')
+//   next()
+// })
 
 app.get('/', (req, res) => {
   // prikazuje .html 'kod'
@@ -60,10 +95,10 @@ app.get('/', (req, res) => {
 
 // next() ce raditi samo ukoliko middleware nije poslao 'response'
 // ovde NECE okinuti i prikazati console.log(), zato sto je iznad poslao 'response'
-app.use((req, res, next) => {
-  console.log('in the next middleware')
-  next()
-})
+// app.use((req, res, next) => {
+//   console.log('in the next middleware')
+//   next()
+// })
 
 app.get('/about', (req, res) => {
   // prikazuje .html 'kod'
