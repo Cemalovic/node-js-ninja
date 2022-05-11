@@ -9,6 +9,21 @@ app.set('view engine', 'ejs')
 // listening for requests
 app.listen(3000)
 
+app.use((req, res, next) => {
+  console.log('new request has made:')
+  console.log('host: ', req.hostname)
+  console.log('path: ', req.path)
+  console.log('method: ', req.method)
+  next()
+})
+
+// next() ce raditi samo ukoliko middleware nije poslao 'response'
+// ovde ce okinuti i prikazati console.log()
+app.use((req, res, next) => {
+  console.log('in the next middleware')
+  next()
+})
+
 app.get('/', (req, res) => {
   // prikazuje .html 'kod'
   // res.send('<p>Home page</p>')
@@ -41,6 +56,13 @@ app.get('/', (req, res) => {
   // res.render('index', { title: 'Home', blogs: blogs} )
   // skraceno od - blogs: blogs
   res.render('index', { title: 'Home', blogs })
+})
+
+// next() ce raditi samo ukoliko middleware nije poslao 'response'
+// ovde NECE okinuti i prikazati console.log(), zato sto je iznad poslao 'response'
+app.use((req, res, next) => {
+  console.log('in the next middleware')
+  next()
 })
 
 app.get('/about', (req, res) => {
