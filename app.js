@@ -27,32 +27,32 @@ app.use(express.static('public'))
 app.use(morgan('dev'))
 
 // mongoose and mong sandbox routes
-app.get('/add-blog', (req, res) => {
-  const blog = new Blog({
-    title: 'new blog',
-    snippet: 'about my new blog',
-    body: 'more about my new blog'
-  })
+// app.get('/add-blog', (req, res) => {
+//   const blog = new Blog({
+//     title: 'new blog',
+//     snippet: 'about my new blog',
+//     body: 'more about my new blog'
+//   })
 
-  blog
-    .save()
-    .then((result) => {
-      res.send(result)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-})
+//   blog
+//     .save()
+//     .then((result) => {
+//       res.send(result)
+//     })
+//     .catch((err) => {
+//       console.log(err)
+//     })
+// })
 
-app.get('/all-blogs', (req, res) => {
-  Blog.find()
-    .then((result) => {
-      res.send(result)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-})
+// app.get('/all-blogs', (req, res) => {
+//   Blog.find()
+//     .then((result) => {
+//       res.send(result)
+//     })
+//     .catch((err) => {
+//       console.log(err)
+//     })
+// })
 
 // posto mi trenutno ne radi konekcija sa mongoDB, u findById treba da ide 'id' iz baze
 
@@ -94,25 +94,28 @@ app.get('/', (req, res) => {
   // prikazuje .ejs stranicu i 1 objekat/vrednost koju zelimo tamo da prikazemo/pozovemo
   // res.render('index', { title: 'Home' })
 
-  const blogs = [
-    {
-      title: 'Yoshi finds eggs',
-      snippet: 'Lorem ipsum dolor sit amet consectetur'
-    },
-    {
-      title: 'Mario finds stars',
-      snippet: 'Lorem ipsum dolor sit amet consectetur'
-    },
-    {
-      title: 'How to defeat bowser',
-      snippet: 'Lorem ipsum dolor sit amet consectetur'
-    }
-  ]
+  // const blogs = [
+  //   {
+  //     title: 'Yoshi finds eggs',
+  //     snippet: 'Lorem ipsum dolor sit amet consectetur'
+  //   },
+  //   {
+  //     title: 'Mario finds stars',
+  //     snippet: 'Lorem ipsum dolor sit amet consectetur'
+  //   },
+  //   {
+  //     title: 'How to defeat bowser',
+  //     snippet: 'Lorem ipsum dolor sit amet consectetur'
+  //   }
+  // ]
 
   // prikazuje .ejs stranicu i vise objekata/vrednosti koju zelimo tamo da prikazemo/pozovemo
   // res.render('index', { title: 'Home', blogs: blogs} )
   // skraceno od - blogs: blogs
-  res.render('index', { title: 'Home', blogs })
+
+  // res.render('index', { title: 'Home', blogs })
+
+  res.redirect('/blogs')
 })
 
 // next() ce raditi samo ukoliko middleware nije poslao 'response'
@@ -134,6 +137,18 @@ app.get('/about', (req, res) => {
 
   // prikazuje .ejs stranicu i 1 objekat/vrednost koju zelimo tamo da prikazemo/pozovemo
   res.render('about', { title: 'About' })
+})
+
+// blog routes
+app.get('/blogs', (req, res) => {
+  Blog.find()
+    .sort({ createdAt: -1 })
+    .then((result) => {
+      res.render('index', { title: 'All Blogs', blogs: result })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 })
 
 app.get('/blogs/create', (req, res) => {
