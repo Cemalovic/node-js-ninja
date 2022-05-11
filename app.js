@@ -44,6 +44,28 @@ app.get('/add-blog', (req, res) => {
     })
 })
 
+app.get('/all-blogs', (req, res) => {
+  Blog.find()
+    .then((result) => {
+      res.send(result)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
+
+// posto mi trenutno ne radi konekcija sa mongoDB, u findById treba da ide 'id' iz baze
+
+// app.get('/single-blog', (req, res) => {
+//   Blog.findById('idIzBaze')
+//   .then((result) => {
+//     res.send(result)
+//   })
+//   .catch((err) => {
+//     console.log(err)
+//   })
+// })
+
 // app.use((req, res, next) => {
 //   console.log('new request has made:')
 //   console.log('host: ', req.hostname)
