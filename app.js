@@ -9,6 +9,7 @@ const app = express()
 // mongoDB connect
 const dbURI =
   'mongodb+srv://sexykoder:test1982@nodetutorial.p0kgv.mongodb.net/node-tutorial?retryWrites=true&w=majority'
+
 mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then((result) => app.listen(3000))
@@ -23,13 +24,16 @@ app.set('view engine', 'ejs')
 // middleware & static files (css, images, ..)
 app.use(express.static('public'))
 
+// middleware that get access to 'req.body' with POST (app.post) method
+app.use(express.urlencoded({ extended: true }))
+
 // logs 'method' and 'port'/'path'
 app.use(morgan('dev'))
 
 // mongoose and mong sandbox routes
 // app.get('/add-blog', (req, res) => {
 //   const blog = new Blog({
-//     title: 'new blog',
+//     title: 'new blog 2',
 //     snippet: 'about my new blog',
 //     body: 'more about my new blog'
 //   })
@@ -54,16 +58,14 @@ app.use(morgan('dev'))
 //     })
 // })
 
-// posto mi trenutno ne radi konekcija sa mongoDB, u findById treba da ide 'id' iz baze
-
 // app.get('/single-blog', (req, res) => {
-//   Blog.findById('idIzBaze')
-//   .then((result) => {
-//     res.send(result)
-//   })
-//   .catch((err) => {
-//     console.log(err)
-//   })
+//   Blog.findById('627cd0e2174622a0e6c7351c')
+//     .then((result) => {
+//       res.send(result)
+//     })
+//     .catch((err) => {
+//       console.log(err)
+//     })
 // })
 
 // app.use((req, res, next) => {
@@ -81,6 +83,7 @@ app.use(morgan('dev'))
 //   next()
 // })
 
+// routes
 app.get('/', (req, res) => {
   // prikazuje .html 'kod'
   // res.send('<p>Home page</p>')
@@ -140,6 +143,16 @@ app.get('/about', (req, res) => {
 })
 
 // blog routes
+
+app.get('/blogs/create', (req, res) => {
+  // prikazuje .ejs stranicu
+  // res.render('create')
+
+  // prikazuje .ejs stranicu i 1 objekat/vrednost koju zelimo tamo da prikazemo/pozovemo
+  res.render('create', { title: 'Create a new Blog' })
+})
+
+// getting all data/blogs from mongoDB, rednering them in 'index.ejs, putting them in to 'blogs' variable, setting up the 'title' and sorting DESC
 app.get('/blogs', (req, res) => {
   Blog.find()
     .sort({ createdAt: -1 })
@@ -151,12 +164,43 @@ app.get('/blogs', (req, res) => {
     })
 })
 
-app.get('/blogs/create', (req, res) => {
-  // prikazuje .ejs stranicu
-  // res.render('create')
+// sending all data/blogs to mongoDB via 'req.body' and '.save' and after that, redirecting to './blogs' page/route
+app.post('/blogs', (req, res) => {
+  const blog = new Blog(req.body)
 
-  // prikazuje .ejs stranicu i 1 objekat/vrednost koju zelimo tamo da prikazemo/pozovemo
-  res.render('create', { title: 'Create a new Blog' })
+  blog
+    .save()
+    .then((result) => {
+      res.redirect('/blogs')
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
+
+// getting ONE data/blog object from mongoDB by its parameter, rednering it in 'details.ejs, putting it in to 'blog' variable and setting up the 'title'
+app.get('/blogs/:id', (req, res) => {
+  const id = req.params.id
+
+  Blog.findById(id)
+    .then((result) => {
+      res.render('details', { blog: result, title: 'Blog Details' })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
+
+app.delete('/blogs/:id', (req, res) => {
+  const id = req.params.id
+
+  Blog.findByIdAndDelete(id)
+    .then((result) => {
+      res.json({ redirect: '/blogs' })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 })
 
 // redirect
